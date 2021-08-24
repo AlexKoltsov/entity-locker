@@ -12,6 +12,14 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * Entity locker implementation based on {@code ConcurrentMap}.
+ * It supports concurrent execution of protected code on entities with different IDs.
+ * <p/>
+ * Global locking based on {@code ReadWriteLock}.
+ *
+ * @param <T> Entity ID's type
+ */
 public class ConcurrentMapEntityLocker<T> implements EntityLocker<T>, GlobalLocker {
 
     // TODO: Implement lock escalation
@@ -39,8 +47,7 @@ public class ConcurrentMapEntityLocker<T> implements EntityLocker<T>, GlobalLock
         if (lock.tryLock(time, unit)) {
             runAndUnlock(runnable, lock);
         } else {
-            Thread.currentThread().interrupt();
-            throw new InterruptedException();
+            interrupt();
         }
     }
 
@@ -49,7 +56,7 @@ public class ConcurrentMapEntityLocker<T> implements EntityLocker<T>, GlobalLock
         if (globalLock.writeLock().tryLock(time, unit)) {
             runGlobally(runnable);
         } else {
-            Thread.currentThread().interrupt();
+            interrupt();
         }
     }
 
@@ -75,5 +82,10 @@ public class ConcurrentMapEntityLocker<T> implements EntityLocker<T>, GlobalLock
         } finally {
             globalLock.writeLock().unlock();
         }
+    }
+
+    private void interrupt() throws InterruptedException {
+        Thread.currentThread().interrupt();
+        throw new InterruptedException();
     }
 }
