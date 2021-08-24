@@ -15,6 +15,7 @@
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <junit-bom.version>5.7.2</junit-bom.version>
         <lombok.version>1.18.20</lombok.version>
+        <logback-classic.version>1.2.5</logback-classic.version>
     </properties>
 
     <dependencyManagement>
@@ -39,6 +40,11 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
         </dependency>
     </dependencies>
 
